@@ -83,22 +83,26 @@ Matrix layerFunction(NeuronLayer layer, Matrix x) {
 }
 
 Matrix* layerRecurrentFunction(NeuronLayer layer, Matrix *xs) {
-    Matrix *zs = (Matrix*) malloc((layer->r + 1) * sizeof(Matrix)); makeMatrix(xs[0]->ROWS, 1);
+    Matrix *zs = (Matrix*) malloc((layer->r) * sizeof(Matrix)); makeMatrix(xs[0]->ROWS, 1);
     int i = 0;
     while (i < layer->r) {
-        Matrix tmp1 = layerRaw(layer, xs[i]);
+        //Epoch input
+        Matrix tmp1 = xs[i] ? layerRaw(layer, xs[i]) : makeMatrix(layer->W->ROWS, 1);
+        //Recurrent input
         Matrix tmp2 = i ? mulMtrxM(layer->R, zs[i-1]) : 
                           makeMatrix(layer->R->ROWS, layer->R->COLS);
+        
+        //Sum of inputs
         Matrix s = addMtrx(tmp1, tmp2);
         freeMatrix(tmp1);
         freeMatrix(tmp2);
-
+        
+        //Sum for next layer
         zs[i] = layer->f(s);
         freeMatrix(s);
         i++;
     }
 
-    zs[i] = layerFunction(layer, zs[i-1]);
     return zs;
 }
 

@@ -23,21 +23,27 @@ struct neuron_layer;
 
 typedef struct neuron_layer* NeuronLayer;
 
+/* NeuronLayer factories */
 NeuronLayer makeBlankNeuronLayer(int in, int out, TransFunc func);
 NeuronLayer maleBlankRecurrentLayer(int in, int out, int r, TransFunc func);
 NeuronLayer makePresetNeuronLayer(Matrix W, Matrix R, int r, TransFunc func);
 
+/* Getters for NeuronLayer */
 Matrix getLayerWeights(NeuronLayer layer);
 Matrix getLayerRecurrentWeights(NeuronLayer layer);
 int getLayerRecurrence(NeuronLayer layer);
 TransFunc getLayerFunc(NeuronLayer layer);
 
+/* Setter methods */
 void setLayerWeights(NeuronLayer layer, Matrix m);
 void setLayerRecurrentWeights(NeuronLayer layer, Matrix r);
 void setLayerRecurrence(NeuronLayer layer, int r);
 void setLayerFunc(NeuronLayer layer, TransFunc func);
 
+/* Runs a single layer, assuming it is not recurrent. */
 Matrix layerFunction(NeuronLayer layer, Matrix x);
+
+/* Runs a single layer, allowing it to be recurrent. */
 Matrix* layerRecurrentFunction(NeuronLayer layer, Matrix *x);
 Matrix layerRaw(NeuronLayer layer, Matrix x);
 
@@ -48,13 +54,18 @@ Matrix layerRaw(NeuronLayer layer, Matrix x);
 struct neural_net;
 typedef struct neural_net* NeuralNet;
 
+/* Neural Net factory */
 NeuralNet makeNeuralNet(int sizes[]);
 
+/* Getter methods */
 NeuronLayer getNetLayer(NeuralNet net, int layer);
 Matrix getNetWeights(NeuralNet net, int layer);
 int getNetDepth(NeuralNet net);
 
+/* Runs network on an input Matrix */
 Matrix netFunction(NeuralNet net, Matrix x);
+
+/* Runs a recurrent network on a set of input matrices. */
 Matrix* netRecurrentFunction(NeuralNet net, Matrix *xs);
 
 #endif
