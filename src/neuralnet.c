@@ -43,6 +43,19 @@ NeuronLayer makePresetNeuronLayer(Matrix W, Matrix R, int r, TransFunc func) {
     return layer;
 }
 
+void freeNeuronLayer(NeuronLayer layer) {
+    freeMatrix(layer->W);
+    layer->W = NULL;
+
+    freeMatrix(layer->R);
+    layer->R = NULL;
+
+    layer->r = 0;
+    layer->f = NULL;
+    
+    free(layer);
+}
+
 Matrix getLayerWeights(NeuronLayer layer) {
     return layer->W;
 }
@@ -131,6 +144,17 @@ NeuralNet makeNeuralNet(int sizes[]) {
 
     return net;
 
+}
+
+void freeNeuralNet(NeuralNet net) {
+    int i = getNetDepth(net);
+    while (i--) {
+        freeNeuronLayer(net->layers[i]);
+        net->layers[i] = NULL;
+    }
+    free(net->layers);
+
+    free(net);
 }
 
 NeuronLayer getNetLayer(NeuralNet net, int layer) {

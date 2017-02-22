@@ -38,6 +38,8 @@ void supervisedHebbRuleTrain(NeuralNet net, NetTrainKit kit) {
     
     int cycles = kit->maxCycles;
     Matrix **data = kit->data;
+    
+    double decay = kit->decay;
 
     while (cycles) {
 
@@ -56,8 +58,10 @@ void supervisedHebbRuleTrain(NeuralNet net, NetTrainKit kit) {
             freeMatrix(x_t);
 
             //Applies the change
-            Matrix newW = addMtrx(dW, getNetWeights(net, 0));
+            Matrix oldW = mulMtrxC(getNetWeights(net, 0), 1 - decay);
             freeMatrix(getNetWeights(net, 0));
+            Matrix newW = addMtrx(dW, oldW);
+            freeMatrix(oldW);
             setLayerWeights(getNetLayer(net, 0), newW);
 
             i++;

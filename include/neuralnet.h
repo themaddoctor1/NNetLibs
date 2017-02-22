@@ -28,6 +28,8 @@ NeuronLayer makeBlankNeuronLayer(int in, int out, TransFunc func);
 NeuronLayer maleBlankRecurrentLayer(int in, int out, int r, TransFunc func);
 NeuronLayer makePresetNeuronLayer(Matrix W, Matrix R, int r, TransFunc func);
 
+void freeNeuronLayer(NeuronLayer layer);
+
 /* Getters for NeuronLayer */
 Matrix getLayerWeights(NeuronLayer layer);
 Matrix getLayerRecurrentWeights(NeuronLayer layer);
@@ -56,6 +58,7 @@ typedef struct neural_net* NeuralNet;
 
 /* Neural Net factory */
 NeuralNet makeNeuralNet(int sizes[]);
+void freeNeuralNet(NeuralNet net);
 
 /* Getter methods */
 NeuronLayer getNetLayer(NeuralNet net, int layer);

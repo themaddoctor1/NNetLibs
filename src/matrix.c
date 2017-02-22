@@ -42,6 +42,9 @@ Matrix identityMatrix(int n) {
 }
 
 void freeMatrix(Matrix m) {
+    if (!m)
+        return;
+
     int i = m->ROWS * m->COLS;
     while(i--)
             m->vals[i] = 0;
