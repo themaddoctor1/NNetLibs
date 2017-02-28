@@ -10,6 +10,8 @@
 
 #include <time.h>
 
+#include <unistd.h>
+
 NetTrainKit kit = NULL;
 
 int conwaySizes[] = {1, 2, 3, 1, 0};
@@ -45,7 +47,7 @@ NeuralNet makeConwayNet(NeuralNet filter, int r, int c) {
             int i = x * c + y; //Index of (x,y)
             
             //The first layer adds the neighbors and livelihood for each cell
-            printf("Building custom filter for (%i, %i)...\n", x, y);
+            //printf("Building custom filter for (%i, %i)...\n", x, y);
             int j = -1;
             while (j <= 1) {
                 int k = -1;
@@ -65,7 +67,7 @@ NeuralNet makeConwayNet(NeuralNet filter, int r, int c) {
                 j++;
             }
             
-            printf("Building layer filters...\n");
+            //printf("Building layer filters...\n");
 
             j = getNetDepth(filter);
             while (j--) {
@@ -101,12 +103,12 @@ NeuralNet makeConwayFilter(NeuralNet filter) {
 
     int *sizes = &conwaySizes[1];
     
-    printf("Making network...\n");
+    /*printf("Making network...\n");*/
     NeuralNet network = filter ? filter : makeNeuralNet(sizes);
     
     srand(time(NULL));
     
-    printf("Randomizing network...\n");
+    /*printf("Randomizing network...\n");*/
 
     int i = 0;
     while (sizes[i+1]) {
@@ -125,7 +127,7 @@ NeuralNet makeConwayFilter(NeuralNet filter) {
     
     if (!kit) {
 
-        printf("Building training kit...\n");
+        /*printf("Building training kit...\n");*/
         
         kit = (NetTrainKit) malloc(sizeof(struct nettrainkit));
 
@@ -170,10 +172,10 @@ NeuralNet makeConwayFilter(NeuralNet filter) {
 
         }
     }
-    printf("Applying transfer functions...\n");
+    /*printf("Applying transfer functions...\n");*/
     setLayerFunc(getNetLayer(network, 0), kit->functions[0]);
     setLayerFunc(getNetLayer(network, 1), kit->functions[1]);
-    //setLayerFunc(getNetLayer(network, 2), kit->functions[2]);
+    /*setLayerFunc(getNetLayer(network, 2), kit->functions[2]);*/
 
     printf("Training network...\n");
 
@@ -204,7 +206,7 @@ NeuralNet makeConway(NeuralNet f, int r, int c) {
                 living++;
             j++;
         }
-*/
+
         printf("Input: {Live: %i, Nghbr: %i}\n", live, neighbors);
         printf("Output: %i\n", getMtrxVal(y, 0, 0) > 0);
         if (live) {
@@ -224,22 +226,25 @@ NeuralNet makeConway(NeuralNet f, int r, int c) {
         freeMatrix(err);
     }
 
-    //printf("The filter's error is %lf\n", error/* / 512*/);
-    
+    printf("The filter's error is %lf\n", error);
+*/    
     //Do not allow error.
     if (error < 0.5) {
-        /*i = 0;
-        while (sizes[i+1]) {
-            printMatrix(getNetWeights(network, i));
-            printf("\n");
+        i = 0;
+        while (i < getNetDepth(filter)) {
+            Matrix m = getNetWeights(filter, i);
+
+            for (int x = 0; x < m->ROWS; x++)
+                for(int y = 0; y < m->COLS; y++)
+                    printf("setMtrxVal(getNetWeights(filter, %i), %i, %i, %lf);\n",
+                            i, x, y, getMtrxVal(m, x, y));
+
+            //printMatrix(getNetWeights(filter, i));
+            //printf("\n");
             i++;
-        }*/
-        
-        printf("Creating ConvoNet...\n");
+        }
         
         NeuralNet cwNet = makeConwayNet(filter, r, c);
-
-        printf("Made ConvoNet successfully.\n");
         /*
         i = 0;
         while (i < 3) {
@@ -252,9 +257,7 @@ NeuralNet makeConway(NeuralNet f, int r, int c) {
         
     } else {
         //Free the filter
-        printf("Freeing filter.\n");
         freeNeuralNet(filter);
-        printf("Done.\n");
     }
 
     return NULL;
@@ -266,17 +269,17 @@ void playConway(NeuralNet cwNet, int cycles, int r, int c, int *board) {
 
     int i = r * c;
     while (i--) {
-        printf("%i, %i = %i\n", i/r, i%r, board[i]);
+        //printf("%i, %i = %i\n", i/r, i%r, board[i]);
         setMtrxVal(grid, i, 0, board[i]);
     }
 
     i = 0;
     while (i < r * c) {
         if (getMtrxVal(grid, i, 0) > 0)
-            printf("X");
+            printf("\033[31m\u25A0\033[0m");
         else
-            printf("O");
-        if (i % c == c - 1)
+            printf("\u25A0");
+        if (i % c == c-1)
             printf("\n");
         i++;
     }
@@ -284,17 +287,20 @@ void playConway(NeuralNet cwNet, int cycles, int r, int c, int *board) {
     int iter = cycles;
 
     while (iter) {
-
-        printf("\nGenning result...\n");
+        
+        //printf("\nGenning result...\n");
         Matrix newGrid = netFunction(cwNet, grid);
-        printf("Done.\n");
-
+        //printf("Done.\n");
+        
+        printf("\n");
+        
+        sleep(1);
         i = 0;
         while (i < r * c) {
             if (getMtrxVal(newGrid, i, 0) > 0)
-                printf("X");
+                printf("\033[31m\u25A0\033[0m");
             else
-                printf("O");
+                printf("\u25A0");
             if (i % c == c-1)
                 printf("\n");
             i++;

@@ -6,16 +6,16 @@ CFLAGS = -Wall -Werror --pedantic -Iinclude -lm -g
 SRCS=$(wildcard src/*.c)
 OBJS=$(SRCS:.c=.o)
 
-EXEC=rps
+LIB=libnnet.a
 
 all: $(OBJS)
-	$(CC) -o $(EXEC) $^ $(CFLAGS)
+	ar -rcs $(LIB) $(OBJS)
 
 clean:
 	rm -f $(OBJS)
 
 fclean:
-	rm -f $(OBJS) $(EXEC)
+	rm -f $(OBJS) $(LIB)
 
 re:
 	make fclean all

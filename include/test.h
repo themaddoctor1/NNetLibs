@@ -12,6 +12,7 @@ void hebbianBananaDemo();
  * filter - An optional parameter that allows a custom filter to be applied.
  *          Can be used for custom rules.
  */
+NeuralNet makeConwayNet(NeuralNet filter, int r, int c);
 NeuralNet makeConway(NeuralNet filter, int r, int c);
 void playConway(NeuralNet cwNet, int cycles, int r, int c, int *board);
 
