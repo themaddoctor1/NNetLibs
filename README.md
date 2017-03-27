@@ -160,5 +160,5 @@ The library has several training functions for use, which are listed below.
 The lack of Perceptron and ADALINE are due to the fact that Delta Rule and Backpropagation can be modified to act exactly like Perceptron and ADALINE. All of these functions require a network and an appropriate training kit.
 
 # Demos
-During the creation of the network, I have written several sample applications that build training kits and train networks on input. These can be viewed in `test.c` and `conway.c`, as well as their respective header files.
+During the creation of the network, I wrote several sample applications that build training kits and train networks on input. These can be viewed in `test.c` and `conway.c`, as well as their respective header files.
 
